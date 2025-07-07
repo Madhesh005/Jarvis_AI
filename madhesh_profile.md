@@ -200,3 +200,5 @@ Jarvis is Madhesh’s personal AI chatbot assistant built using Google Gemini an
 
 📌 _This profile is used by Jarvis, Madhesh’s AI assistant, to answer with deep awareness about his background, projects, and skills._
 """
+
+
