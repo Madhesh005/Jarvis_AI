@@ -34,7 +34,7 @@ Be short and natural unless asked for detailed help. Don’t repeat the full pro
 
 # Initialize chat memory
 if "chat" not in st.session_state:
-    st.session_state.chat = genai.GenerativeModel("gemini-2.0-flash").start_chat(history=[
+    st.session_state.chat = genai.GenerativeModel("gemini-2.5-flash").start_chat(history=[
         {"role": "user", "parts": [f"{SYSTEM_INSTRUCTION}\n\n{USER_KNOWLEDGE}"]},
         {"role": "model", "parts": ["Got it. I’ll remember Madhesh’s details while answering future queries."]}
     ])
@@ -51,7 +51,7 @@ with st.sidebar:
     ## About Madhesh
     🔹 *Developer & Creator* of this AI  
     🔹 Passionate about AI, Web Dev, and Hackathons  
-    🔹 *Portfolio*:  [@Madhesh](http://madheshworks.netlify.app)
+    🔹 *Portfolio*:  [@Madhesh](https://madheshworks.vercel.app/)
 
     ---
     ### 💡 Tips:
@@ -88,7 +88,13 @@ if prompt:
             response = st.session_state.chat.send_message(prompt)
             reply = response.text.strip()
     except Exception as e:
-        reply = f"⚠️ Error: {str(e)}"
+        error_msg = str(e)
+        if "429" in error_msg or "quota" in error_msg.lower():
+            reply = "⚠️ **Quota Exceeded**: I've hit the daily API limit. Please try again later or consider upgrading your Gemini API plan."
+        elif "403" in error_msg:
+            reply = "⚠️ **API Key Issue**: The API key needs to be refreshed. Please check your Gemini API key."
+        else:
+            reply = f"⚠️ **Error**: {error_msg}"
 
     st.chat_message("assistant").markdown(reply)
     st.session_state.messages.append({"role": "assistant", "content": reply})
